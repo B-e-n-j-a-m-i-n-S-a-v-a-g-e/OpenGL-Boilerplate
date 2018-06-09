@@ -5,7 +5,7 @@ Window::Window()
 	width = 800;
 	height = 600;
 
-	for (size_t i = 0; i < 1024; i++) 
+	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
 	}
@@ -15,7 +15,6 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 {
 	width = windowWidth;
 	height = windowHeight;
-
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -56,7 +55,7 @@ int Window::Initialise()
 	// Set the current context
 	glfwMakeContextCurrent(mainWindow);
 
-	//Handle key & mouse input
+	// Handle Key + Mouse Input
 	CreateCallbacks();
 	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -89,17 +88,16 @@ void Window::CreateCallbacks()
 GLfloat Window::getXChange()
 {
 	GLfloat theChange = xChange;
-	xChange = 0;
+	xChange = 0.0f;
 	return theChange;
 }
 
 GLfloat Window::getYChange()
 {
 	GLfloat theChange = yChange;
-	yChange = 0;
+	yChange = 0.0f;
 	return theChange;
 }
-
 
 void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
 {
@@ -146,5 +144,3 @@ Window::~Window()
 	glfwDestroyWindow(mainWindow);
 	glfwTerminate();
 }
-
-

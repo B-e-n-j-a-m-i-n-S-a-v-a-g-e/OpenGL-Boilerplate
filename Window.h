@@ -19,7 +19,7 @@ public:
 
 	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
-	bool* getKeys(){return keys; }
+	bool* getKeys() { return keys; }
 	GLfloat getXChange();
 	GLfloat getYChange();
 
@@ -28,7 +28,7 @@ public:
 	~Window();
 
 private:
-	GLFWwindow * mainWindow;
+	GLFWwindow* mainWindow;
 
 	GLint width, height;
 	GLint bufferWidth, bufferHeight;

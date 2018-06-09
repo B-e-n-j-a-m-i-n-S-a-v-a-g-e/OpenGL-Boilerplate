@@ -18,4 +18,3 @@ private:
 	GLsizei indexCount;
 };
 
-
