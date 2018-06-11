@@ -5,7 +5,7 @@ Window::Window()
 	width = 800;
 	height = 600;
 
-	for (size_t i = 0; i < 1024; i++)
+	for(size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
 	}
@@ -56,7 +56,7 @@ int Window::Initialise()
 	glfwMakeContextCurrent(mainWindow);
 
 	// Handle Key + Mouse Input
-	CreateCallbacks();
+	createCallbacks();
 	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Allow modern extension access
@@ -79,7 +79,7 @@ int Window::Initialise()
 	glfwSetWindowUserPointer(mainWindow, this);
 }
 
-void Window::CreateCallbacks()
+void Window::createCallbacks()
 {
 	glfwSetKeyCallback(mainWindow, handleKeys);
 	glfwSetCursorPosCallback(mainWindow, handleMouse);

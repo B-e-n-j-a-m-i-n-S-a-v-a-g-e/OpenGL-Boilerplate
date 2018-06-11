@@ -19,7 +19,7 @@ public:
 
 	bool getShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
-	bool* getKeys() { return keys; }
+	bool* getsKeys() { return keys; }
 	GLfloat getXChange();
 	GLfloat getYChange();
 
@@ -41,7 +41,7 @@ private:
 	GLfloat yChange;
 	bool mouseFirstMoved;
 
-	void CreateCallbacks();
+	void createCallbacks();
 	static void handleKeys(GLFWwindow* window, int key, int code, int action, int mode);
 	static void handleMouse(GLFWwindow* window, double xPos, double yPos);
 };
