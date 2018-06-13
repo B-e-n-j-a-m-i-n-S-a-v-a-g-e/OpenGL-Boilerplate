@@ -24,6 +24,10 @@
 #include "SpotLight.h"
 #include "Material.h"
 
+#include "Model.h"
+
+#include <ASSIMP\Importer.hpp>
+
 const float toRadians = 3.14159265f / 180.0f;
 
 Window mainWindow;
@@ -37,6 +41,8 @@ Texture plainTexture;
 
 Material shinyMaterial;
 Material dullMaterial;
+
+Model car;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -138,17 +144,20 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.2f);
 
 	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTexture();
+	brickTexture.LoadTextureA();
 	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTexture();
+	dirtTexture.LoadTextureA();
 	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTexture();
+	plainTexture.LoadTextureA();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
+
+	car = Model();
+	car.LoadModel("Models/for_ele.obj");
 
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 								0.1f, 0.1f,
@@ -186,6 +195,7 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
+
 	// Loop until window closed
 	while (!mainWindow.getShouldClose())
 	{
@@ -215,6 +225,7 @@ int main()
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
+		
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
@@ -232,6 +243,7 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
+		
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
 		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
@@ -248,6 +260,13 @@ int main()
 		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		car.RenderModel();
+		
 		glUseProgram(0);
 
 		mainWindow.swapBuffers();
