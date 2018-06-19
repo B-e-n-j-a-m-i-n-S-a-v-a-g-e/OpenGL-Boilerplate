@@ -26,6 +26,8 @@
 
 #include "Model.h"
 
+#include "Skybox.h"
+
 #include <ASSIMP\Importer.hpp>
 
 const float toRadians = 3.14159265f / 180.0f;
@@ -49,11 +51,13 @@ Texture plainTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
-Model car;
+//Model car;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+
+Skybox skybox;
 
 unsigned int pointLightCount = 0;
 unsigned int spotLightCount = 0;
@@ -179,7 +183,7 @@ void RenderScene()
 	model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
-	car.RenderModel();
+	//car.RenderModel();
 }
 
 void DirectionalShadowMapPass(DirectionalLight* light)
@@ -225,6 +229,15 @@ void OmniShadowMapPass(PointLight* light)
 
 void RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 {
+	glViewport(0, 0, 1366, 768);
+
+	// Clear the window
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	skybox.DrawSkybox(viewMatrix, projectionMatrix);
+
+
 	shaderList[0].UseShader();
 
 	uniformModel = shaderList[0].GetModelLocation();
@@ -233,12 +246,6 @@ void RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 	uniformEyePosition = shaderList[0].GetEyePositionLocation();
 	uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 	uniformShininess = shaderList[0].GetShininessLocation();
-
-	glViewport(0,0, 1366, 768);
-
-	// Clear the window
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -282,13 +289,13 @@ int main()
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
 
-	car = Model();
-	car.LoadModel("Models/Rabbit.obj");
+	//car = Model();
+	//car.LoadModel("Models/Rabbit.obj");
 
 	mainLight = DirectionalLight(
 								2048, 2048,
 								1.0f, 1.0f, 1.0f, 
-								0.0f, 0.1f,
+								1.0f, 1.0f,
 								0.0f, -15.0f, -10.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
@@ -327,6 +334,19 @@ int main()
 	spotLightCount++;
 
 
+	std::vector<std::string> skyboxFaces;
+
+	skyboxFaces.push_back("Textures/Skybox/siege_rt.tga");
+	skyboxFaces.push_back("Textures/Skybox/siege_lf.tga");
+	skyboxFaces.push_back("Textures/Skybox/siege_up.tga");
+	skyboxFaces.push_back("Textures/Skybox/siege_dn.tga");
+	skyboxFaces.push_back("Textures/Skybox/siege_bk.tga");
+	skyboxFaces.push_back("Textures/Skybox/siege_ft.tga");
+
+	skybox = Skybox(skyboxFaces);
+
+	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
+		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(glm::radians(60.0f), (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 100.0f);
 
 
